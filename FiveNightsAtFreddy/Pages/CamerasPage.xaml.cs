@@ -26,6 +26,7 @@ namespace FiveNightsAtFreddy.Pages
     public partial class CamerasPage : Page
     {
         public ObservableCollection<CameraCameraScreen> CameraList = new ObservableCollection<CameraCameraScreen>();
+        public Random random = new Random();
         public CamerasPage()
         {
             InitializeComponent();
@@ -47,26 +48,22 @@ namespace FiveNightsAtFreddy.Pages
 
         private void TimerForFirstCamera_Tick(object sender, EventArgs e)
         {
-            var camera = GlobalSettings.DB.Camera.ToList()[0];
-                var screens = GlobalSettings.DB.CameraScreen.Where(u => u.CameraId == camera.Id).ToList();
-            CameraList[0] = new CameraCameraScreen { Id = 1, ScreenCamera = screens[new Random().Next(0, screens.Count - 1)], CameraForListView = camera };
+            var screenForFirstCamera = GlobalSettings.ScreensForFirst[random.Next(0, GlobalSettings.ScreensForFirst.Count - 1)];
+            CameraList[0] = new CameraCameraScreen { Id = 2, ScreenCamera = screenForFirstCamera, CameraForListView = GlobalSettings.DB.Camera.ToList()[1] };
             Refresh();
         }
 
         private void TimerForSecondCamera_Tick(object sender, EventArgs e)
         {
-            var camera = GlobalSettings.DB.Camera.ToList()[1];
-            var screens = GlobalSettings.DB.CameraScreen.Where(u => u.CameraId == camera.Id).ToList();
-            CameraList[1] = new CameraCameraScreen { Id = 2, ScreenCamera = screens[new Random().Next(0, screens.Count - 1)], CameraForListView = camera };
-
+            var screenForSecondCamera = GlobalSettings.ScreensForSecond[random.Next(0, GlobalSettings.ScreensForSecond.Count - 1)];
+            CameraList[0] = new CameraCameraScreen { Id = 2, ScreenCamera = screenForSecondCamera, CameraForListView = GlobalSettings.DB.Camera.ToList()[1] };
             Refresh();
         }
 
         private void TimerForThirdCamera_Tick(object sender, EventArgs e)
         {
-            var camera = GlobalSettings.DB.Camera.ToList()[2];
-            var screens = GlobalSettings.DB.CameraScreen.Where(u => u.CameraId == camera.Id).ToList();
-            CameraList[2] = new CameraCameraScreen { Id = 3, ScreenCamera = screens[new Random().Next(0, screens.Count - 1)], CameraForListView = camera };
+            var screenForThirdCamera = GlobalSettings.ScreensForThird[random.Next(0, GlobalSettings.ScreensForThird.Count - 1)];
+            CameraList[0] = new CameraCameraScreen { Id = 3, ScreenCamera = screenForThirdCamera, CameraForListView = GlobalSettings.DB.Camera.ToList()[2] };
             Refresh();
         }
 
@@ -74,13 +71,14 @@ namespace FiveNightsAtFreddy.Pages
         {
             if (CameraList.Count == 0)
             {
-                var screens = GlobalSettings.DB.CameraScreen.ToList();
+                var screenForFirstCamera = GlobalSettings.ScreensForFirst[random.Next(0, GlobalSettings.ScreensForFirst.Count - 1)];
+                var screenForSecondCamera = GlobalSettings.ScreensForSecond[random.Next(0, GlobalSettings.ScreensForSecond.Count - 1)];
+                var screenForThirdCamera = GlobalSettings.ScreensForThird[random.Next(0, GlobalSettings.ScreensForThird.Count - 1)];
+                CameraList.Add(new CameraCameraScreen { Id = 1, ScreenCamera = screenForFirstCamera, CameraForListView = GlobalSettings.DB.Camera.ToList()[0] });
+                CameraList.Add(new CameraCameraScreen { Id = 2, ScreenCamera = screenForSecondCamera, CameraForListView = GlobalSettings.DB.Camera.ToList()[1] });
+                CameraList.Add(new CameraCameraScreen { Id = 3, ScreenCamera = screenForThirdCamera, CameraForListView = GlobalSettings.DB.Camera.ToList()[2] });
 
-                CameraList.Add(new CameraCameraScreen { Id = 1, ScreenCamera = screens.Where(u => u.CameraId == GlobalSettings.DB.Camera.ToList()[0].Id).ToList()[new Random().Next(0, screens.Where(u => u.CameraId == GlobalSettings.DB.Camera.ToList()[0].Id).ToList().Count - 1)], CameraForListView = GlobalSettings.DB.Camera.ToList()[0] });
-                CameraList.Add(new CameraCameraScreen { Id = 2, ScreenCamera = screens.Where(u => u.CameraId == GlobalSettings.DB.Camera.ToList()[1].Id).ToList()[new Random().Next(0, screens.Where(u => u.CameraId == GlobalSettings.DB.Camera.ToList()[1].Id).ToList().Count - 1)], CameraForListView = GlobalSettings.DB.Camera.ToList()[1] });
-                CameraList.Add(new CameraCameraScreen { Id = 3, ScreenCamera = screens.Where(u => u.CameraId == GlobalSettings.DB.Camera.ToList()[2].Id).ToList()[new Random().Next(0, screens.Where(u => u.CameraId == GlobalSettings.DB.Camera.ToList()[2].Id).ToList().Count - 1)], CameraForListView = GlobalSettings.DB.Camera.ToList()[2] });
             }
-            CameraList.OrderBy(u => u.CameraForListView.Description).ToList();
             ListViewCameras.ItemsSource = CameraList;
         }
 
